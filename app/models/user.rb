@@ -13,6 +13,9 @@ class User < ApplicationRecord
   has_many :reverses_of_relationship, class_name: 'Relationship', foreign_key: 'follow_id'
   has_many :followers, through: :reverses_of_relationship, source: :user
   
+  has_many :favorites #likeテーブルへ
+  has_many :likes, through: :favorites, source: :micropost #micropostテーブルへ,sourceはfavoritesテーブルのどのidを参照するのかを選択している。
+  
   def follow(other_user)
     unless self == other_user
       self.relationships.find_or_create_by(follow_id: other_user.id)
@@ -31,4 +34,17 @@ class User < ApplicationRecord
   def feed_microposts
     Micropost.where(user_id: self.following_ids + [self.id])
   end
+  
+  def like(micropost)
+   Favorite.find_or_create_by(user_id: self.id, micropost_id: micropost.id)
+  end
+  
+  def unlike(micropost)
+   favorite = Favorite.find_by(user_id: self.id, micropost_id: micropost.id)
+   favorite.destroy if favorite
+  end
+  
+ def liking?(micropost)
+   self.likes.include?(micropost)
+ end
 end

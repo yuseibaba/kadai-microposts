@@ -7,6 +7,7 @@ Rails.application.routes.draw do
           #    signup GET    /signup(.:format)         users#new
 #followings_user GET    /users/:id/followings(.:format) users#followings
 #followers_user GET    /users/:id/followers(.:format)  users#followers
+#   likes_user GET    /users/:id/likes(.:format)      users#likes
           #     users GET    /users(.:format)          users#index
           #           POST   /users(.:format)          users#create
           #      user GET    /users/:id(.:format)      users#show
@@ -14,6 +15,8 @@ Rails.application.routes.draw do
           # micropost DELETE /microposts/:id(.:format) microposts#destroy
 #relationships POST   /relationships(.:format)        relationships#create
   #relationship DELETE /relationships/:id(.:format)    relationships#destroy
+#       favorites POST   /favorites(.:format)            favorites#create
+#      favorite DELETE /favorites/:id(.:format)        favorites#destroy
   
   root to: 'toppages#index'
   
@@ -26,8 +29,10 @@ Rails.application.routes.draw do
     member do #memberは:idをurlを加える、collectionは:idを加えない
       get :followings
       get :followers
+      get :likes
     end
   end
   resources :microposts, only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]
+  resources :favorites, only: [:create, :destroy]
 end
